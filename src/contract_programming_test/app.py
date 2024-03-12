@@ -15,6 +15,14 @@ from dataclasses import dataclass, field
 import deal
 # import icontract
 
+def validate_add_item_quantity(item: 'Item', quantity:int):
+    return True
+
+def greater_than_zero(num: int) -> bool:
+    if num is None:
+        num = 0
+    return num > 0
+
 class Quote(BaseModel):
     quote_name: str
     line_items: 'List[LineItem]'
@@ -35,32 +43,49 @@ class Item(BaseModel):
     price: float
     tax: Optional[float] = None
 
+
 @deal.has('io', 'stdout')
 @deal.safe
 def no_print():
     print('psyche')
 
 
-@dataclass
-@deal.inv(lambda self: self.total >= 0)
-class CashRegister:
-    total: float = 0
-    tax: float = 0
-    line_items: List[LineItem] = field(default_factory=list)
+@deal.pure
+@deal.pre(validate_add_item_quantity) #type: ignore
+@deal.post(greater_than_zero) #type: ignore
+def add_item(register: 'CashRegister', item: Item, quantity: int):
+    register.set_total(item.price * quantity)
+    if item.tax:
+        register.tax += item.tax * quantity
+    return register.total
 
-    @deal.pure
-    @deal.pre(lambda self, item, quantity: quantity > 0)
+# @deal.inv(lambda self: self.total >= 0) #type: ignore
+@dataclass
+class CashRegister:
+    """A cash register for a store."""
+    total: float = 0.0
+    tax: float = 0
+    # line_items: List[LineItem] = field(default_factory=list)
+
+    @deal.pre(validate_add_item_quantity) #type: ignore
     def add_item(self, item: Item, quantity: int):
         self.total += item.price * quantity
         if item.tax:
             self.tax += item.tax * quantity
+        return self.total
 
     @deal.pure
-    @deal.pre(lambda self, total: total == 0)
+    @deal.pre(lambda total: total == 0) #type: ignore
     def set_total(self, total: float):
         self.total = total
+        return self.total
 
-
+@deal.raises(ValueError)
+@deal.post(lambda r: r >= 0.0)
+def plain_addition(a: int, b: int) -> int:
+    if not a or not b:
+        raise ValueError('a and b must be non-zero')
+    return abs(a + b)
 
 if __name__ == "__main__":
     # no!

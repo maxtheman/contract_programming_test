@@ -13,6 +13,9 @@ dependencies = [
     "icontract-hypothesis>=1.1.7",
     "coverage>=7.4.3",
     "deal[all] @ file:///Users/max/Documents/contract_programming_test/deal-4.24.3-py3-none-any.whl",
+    "crosshair-tool>=0.0.50",
+    "setuptools>=69.1.1",
+    "watchdog>=4.0.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -29,6 +32,8 @@ dev-dependencies = []
 [tool.rye.scripts]
 app = "python src/contract_programming_test/app.py"
 lint = "python -m deal lint src/contract_programming_test/"
+watch-test = "watchmedo shell-command --patterns='*.py' --recursive --command='rye test' ."
+watch-crosshair = "crosshair watch src/contract_programming_test"
 
 [tool.hatch.metadata]
 allow-direct-references = true
