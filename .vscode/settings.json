@@ -2,7 +2,7 @@
     "python.languageServer": "Pylance",
     "python.analysis.typeCheckingMode": "strict",
     "python.testing.pytestArgs": [
-        "src"
+        "src/contract_programming_test/test.py"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
