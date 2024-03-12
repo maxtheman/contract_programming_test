@@ -1,0 +1,30 @@
+[project]
+name = "contract-programming-test"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Max Caldwell", email = "max@scriptt.ai" }
+]
+dependencies = [
+    "icontract>=2.6.6",
+    "deal>=4.24.3",
+    "pytest>=8.1.1",
+    "pydantic>=2.6.4",
+    "hypothesis>=6.99.5",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/contract_programming_test"]
