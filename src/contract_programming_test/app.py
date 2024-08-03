@@ -12,6 +12,10 @@ from enum import Enum
 from pydantic import BaseModel
 from typing import List, Optional
 from dataclasses import dataclass
+import deal
+
+def item_price_validator(self: 'CashRegister', item: 'Item'):
+    return item.price > 0
 
 class Quote(BaseModel):
     quote_name: str
@@ -40,6 +44,7 @@ class CashRegister:
     tax: float = 0
     # line_items: List[LineItem] = field(default_factory=list)
 
+    @deal.pre(item_price_validator)
     def add_item(self, item: Item, quantity: int):
         self.total += item.price * quantity
         if item.tax:
